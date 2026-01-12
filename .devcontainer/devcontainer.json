@@ -1,0 +1,14 @@
+{
+  "name": "curso-ia-agroindustria-2",
+  "build": { "dockerfile": "Dockerfile" },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "postCreateCommand": "python -m pip install -U pip"
+}
