@@ -106,7 +106,7 @@
 \tableofcontents
 \newpage
 % =====================================================
-% Capítulo 0 (Intro): Puente desde Python básico a HPC/NumPy
+% Capítulo 1 (Intro): Puente desde Python básico a HPC/NumPy
 % =====================================================
 \section{Capítulo 1: De Python básico a NumPy (el puente conceptual)}
 
@@ -423,7 +423,7 @@ y calcula los porcentajes de cada clase usando máscaras.
 \section{Capítulo: Visualización esencial con Matplotlib (desde NumPy)}
 
 La visualización es parte del flujo científico: permite validar datos, detectar outliers y comunicar resultados.
-Como ya estamos usando NumPy (\texttt{np}), el siguiente paso natural es graficar con Matplotlib a través de \texttt{matplotlib.pyplot}. [web:358]
+Como ya estamos usando NumPy (\texttt{np}), el siguiente paso natural es graficar con Matplotlib a través de \texttt{matplotlib.pyplot}.
 
 \begin{conceptbox}{Objetivo}
 Aprender lo mínimo indispensable para:
@@ -436,64 +436,92 @@ Aprender lo mínimo indispensable para:
 \end{conceptbox}
 
 \subsection{\texttt{pyplot}: la interfaz rápida}
-El flujo típico con \texttt{pyplot} es: crear gráfico, etiquetar, y guardar/mostrar. [web:358]
+El flujo típico con \texttt{pyplot} es: crear gráfico, etiquetar, y guardar/mostrar.
 
 \subsection{Gráfico de línea (1D)}
+
 \begin{lstlisting}[language=Python, caption={Línea: serie 1D con etiquetas y leyenda}]
-import numpy as np
-import matplotlib.pyplot as plt
+import numpy as np # importa la libreria numpy, con alias np
+import matplotlib.pyplot as plt # importa la libreria matplotlib con su sublibrería pyplot y alias plt
 
 # Simulación: 24 mediciones de humedad (una por hora)
+# Evalúa la función en una línea que está en el intervalo [0,2pi)
+# Con 24 puntos, no se incluye el extremo derecho
+
 hum = 40 + 10*np.sin(np.linspace(0, 2*np.pi, 24))
 
-plt.plot(hum, label="Humedad (%)")    # curva [web:354]
-plt.title("Humedad por hora")
-plt.xlabel("Hora")
-plt.ylabel("Humedad (%)")
-plt.legend()                          # leyenda [web:352]
-plt.show()
+
+plt.plot(hum, label="Humedad (%)")  # Grafica la curva
+plt.title("Humedad por hora")       # Título
+plt.xlabel("Hora")                  # Nombre del eje x
+plt.ylabel("Humedad (%)")           # Nombre del eje y
+plt.legend("Np") # leyenda
+plt.show()                          # Muestra la gráfica
 \end{lstlisting}
 
+El gráfico se puede apreciar en la figura \ref{fig:hum}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{humedad.png}
+    \label{fig:hum}
+    \caption{Gráfica generada con los comandos de python}
+\end{figure}
+
 \subsection{Scatter (dispersión): detectar relación y outliers}
+
+Diagrama de dispersión generado por Scatter de python, ver figura \ref{fig:scater}
 \begin{lstlisting}[language=Python, caption={Scatter: temperatura vs humedad}]
 import numpy as np
 import matplotlib.pyplot as plt
 
-np.random.seed(7)
-temp = 20 + 10*np.random.rand(100)
-hum  = 30 + 40*np.random.rand(100)
+np.random.seed(7) # Utiliza una semilla, para que los datos no cambien
+temp = 20 + 10*np.random.rand(100) # Genera una serie aleatoria de temperaturas
+hum  = 30 + 40*np.random.rand(100) # Genera una serie aleatoria de humedades
 
-plt.scatter(temp, hum, s=18)
+plt.scatter(temp, hum, s=18) # Utiliza el tipo de gráfica scatter
 plt.title("Relación temperatura vs humedad")
 plt.xlabel("Temperatura (C)")
 plt.ylabel("Humedad (%)")
 plt.show()
 \end{lstlisting}
-
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{scater.png}
+    \caption{Diagrama de dispersión, generada con numpy}
+    \label{fig:scater}
+\end{figure}
 \subsection{Heatmap (2D) con \texttt{imshow} + \texttt{colorbar}}
-Para una matriz (por ejemplo, mapa de humedad), \texttt{imshow} la dibuja como imagen y \texttt{colorbar} añade la escala de colores. [web:387][web:382]
+Para una matriz (por ejemplo, mapa de humedad), \texttt{imshow} la dibuja como imagen y \texttt{colorbar} añade la escala de colores.
 
 \begin{lstlisting}[language=Python, caption={Heatmap: humedad 2D con colorbar}]
 import numpy as np
 import matplotlib.pyplot as plt
 
-humedad = np.random.rand(50, 50)
+humedad = np.random.rand(50, 50) # Genera una matriz de valores aleatorios
 
-plt.imshow(humedad, cmap="viridis", interpolation="nearest")  # [web:387]
-plt.colorbar()                                                # [web:382]
+plt.imshow(humedad, cmap="viridis", interpolation="nearest")  # Muestra el mapa de calor
+plt.colorbar()                                                # Colorea
 plt.title("Mapa de humedad (50x50)")
 plt.show()
 \end{lstlisting}
 
+Se puede apreciar el mapa de calor en la figura \ref{fig:calor}
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.3]{calor.png}
+    \caption{Mapa de calor con numpy}
+    \label{fig:calor}
+\end{figure}
 \subsection{Guardar gráficos con \texttt{savefig}}
-Para incluir resultados en el reporte, lo ideal es guardar figuras en archivos (por ejemplo PNG) usando \texttt{savefig}. [web:351]
+Para incluir resultados en el reporte, lo ideal es guardar figuras en archivos (por ejemplo PNG) usando \texttt{savefig}.
 
 \begin{lstlisting}[language=Python, caption={Guardar figura a mapa\_humedad.png}]
-import os
+import os # Importa comandos del sistema
 import numpy as np
 import matplotlib.pyplot as plt
 
-os.makedirs("reports", exist_ok=True)
+os.makedirs("reports", exist_ok=True) # Verifica que exista la carpeta reports
 
 humedad = np.random.rand(50, 50)
 
@@ -501,11 +529,11 @@ plt.imshow(humedad, cmap="viridis", interpolation="nearest")
 plt.colorbar()
 plt.title("Mapa de humedad (50x50)")
 
-plt.savefig("mapa_humedad.png", dpi=150, bbox_inches="tight")  # [web:351]
+plt.savefig("reports/mapa_humedad.png", dpi=150, bbox_inches="tight")  # Guarda la figura con el nombre mapa_humedad.png en la carpeta reports
 \end{lstlisting}
 
 \begin{warningbox}{Tip práctico}
-Si vas a usar \texttt{plt.show()}, guarda antes con \texttt{plt.savefig(...)} para evitar perder la figura en algunos flujos de ejecución. [web:386]
+Si vas a usar \texttt{plt.show()}, guarda antes con \texttt{plt.savefig(...)} para evitar perder la figura en algunos flujos de ejecución.
 \end{warningbox}
 
 \subsection{Ejercicios}
@@ -530,8 +558,7 @@ Guárdala como \texttt{reports/diagnostico.png}.
 
 % =====================================================
 \section*{Prefacio: de scripts a sistemas que escalan}
-En Semana 01 construiste hábitos: terminal, organización y Git.
-En Semana 02 vamos a profesionalizar el código: validar datos, medir rendimiento y usar NumPy para operar por bloques.
+Vamos a profesionalizar el código: validar datos, medir rendimiento y usar NumPy para operar por bloques.
 
 \begin{conceptbox}{Definition of Done (DoD)}
 Al terminar, debes tener:
