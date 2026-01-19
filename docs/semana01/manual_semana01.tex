@@ -734,89 +734,98 @@ Documenta en tu README qué hizo cada comando y qué insights descubriste.
 % =====================================================
 % ENTREGABLE A1
 % =====================================================
+% =====================================================
+% ENTREGABLE A1
+% =====================================================
 \section{Entregable A1: Script de Setup Reproducible}
 
 \begin{infobox}{Objetivo}
-Construir un script Bash (\texttt{scripts/setup\_proyecto.sh}) que automatice la creación de estructura, descarga de datos (muestra) y validación básica.
+Construir un script Bash (\texttt{scripts/setup\_proyecto.sh}) que automatice la creación de estructura, descarga de datos reales y validación básica.
 \end{infobox}
+
+\subsection{Conceptos Nuevos Necesarios}
+
+Para este script usaremos herramientas de automatización que no hemos visto en detalle:
+
+\begin{itemize}
+    \item \textbf{\texttt{curl -o destino url}}: Descarga un archivo desde internet. Es como ``Guardar como...'' pero desde la terminal.
+    \item \textbf{\texttt{if [ ! -f archivo ]; then ... fi}}: Bloque condicional que verifica si un archivo \textbf{NO} existe antes de intentar crearlo o descargarlo (evita sobreescribir trabajo previo).
+    \item \textbf{\texttt{set -euo pipefail}}: Un ``modo estricto'' para Bash. Hace que el script se detenga inmediatamente si ocurre cualquier error, en lugar de seguir ejecutando comandos a ciegas.
+\end{itemize}
 
 \subsection{Requisitos Mínimos}
 
 \begin{enumerate}
-\item Crea estructura de carpetas (\texttt{data/raw}, \texttt{data/processed}, \texttt{scripts}, \texttt{reports}).
-\item Descarga un CSV pequeño de ejemplo (puedes usar \texttt{wget} o \texttt{curl} a una URL pública, o copiarlo de tu carpeta personal).
-\item Genera un reporte en \texttt{reports/validacion\_inicial.txt} que contenga:
-  \begin{itemize}
-  \item Número de filas (\texttt{wc -l}).
-  \item Número de columnas (\texttt{head -n1 | tr ',' '\textbackslash n' | wc -l}).
-  \item Verificación de valores faltantes (\texttt{grep ",,"}).
-  \end{itemize}
-\item Registra todo en Git con al menos 3 commits significativos.
+    \item \textbf{Automatización de Carpetas:} El script debe crear \texttt{data/raw}, \texttt{data/processed}, \texttt{scripts} y \texttt{reports} usando \texttt{mkdir -p} (para no fallar si ya existen).
+    \item \textbf{Descarga Automática:} Debe descargar el dataset Iris desde una URL pública (ver plantilla) y guardarlo como \texttt{data/raw/datos\_sensores.csv}.
+    \item \textbf{Validación de Calidad:} Generar un archivo \texttt{reports/validacion\_inicial.txt} con:
+    \begin{itemize}
+        \item Fecha de ejecución (\texttt{date}).
+        \item Conteo de filas y columnas.
+        \item Detección de posibles valores vacíos (\texttt{grep ",,"}).
+    \end{itemize}
+    \item \textbf{Control de Versiones:} El repositorio final debe tener un \texttt{.gitignore} adecuado y al menos 3 commits descriptivos.
 \end{enumerate}
 
-\begin{warningbox}{Criterios de Evaluación}
-\begin{itemize}
-\item El script debe ser \textbf{idempotente}: ejecutarlo varias veces no rompe nada.
-\item Usa \texttt{mkdir -p} y valida si el archivo ya existe antes de descargar.
-\item Mensajes de commit claros con prefijos ("feat:", "fix:", "docs:").
-\item Incluye un \texttt{README.md} con instrucciones de uso del script.
-\end{itemize}
-\end{warningbox}
+\subsection{Plantilla del Script (Base)}
 
-\subsection{Estructura Esperada del Repositorio}
-
-\begin{verbatim}
-proyecto_ia/
-├── data/
-│   ├── raw/
-│   │   └── datos_sensores.csv
-│   └── processed/
-├── scripts/
-│   └── setup_proyecto.sh
-├── reports/
-│   └── validacion_inicial.txt
-├── .gitignore
-└── README.md
-\end{verbatim}
-
-\subsection{Plantilla del Script}
+Copia este código en \texttt{scripts/setup\_proyecto.sh} y estúdialo. Ya incluye la URL correcta para el ejercicio.
 
 \begin{lstlisting}[style=bashstyle]
 #!/usr/bin/env bash
+# Modo estricto: el script falla si algún comando falla
 set -euo pipefail
 
-# Crear estructura
+echo ">>> Iniciando setup del proyecto..."
+
+# 1. Crear estructura de carpetas (silencioso si ya existen)
 mkdir -p data/raw data/processed scripts reports
 
-# Descargar datos (ejemplo)
-DATA_URL="https://ejemplo.com/datos.csv"
+# 2. Definir variables de descarga
+# Usamos el dataset Iris como "datos de sensores"
+DATA_URL="https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv"
 DATA_FILE="data/raw/datos_sensores.csv"
 
+# 3. Descargar solo si no existe (Idempotencia)
 if [ ! -f "$DATA_FILE" ]; then
-  echo "Descargando datos..."
-  curl -o "$DATA_FILE" "$DATA_URL"
+    echo ">>> Descargando datos desde GitHub..."
+    # -L sigue redirecciones, -o guarda en archivo
+    curl -L -o "$DATA_FILE" "$DATA_URL"
+else
+    echo ">>> Los datos ya existen, saltando descarga."
 fi
 
-# Validar datos
-echo "=== Reporte de Validación ===" > reports/validacion_inicial.txt
-echo "Fecha: $(date)" >> reports/validacion_inicial.txt
-echo "Filas: $(wc -l < $DATA_FILE)" >> reports/validacion_inicial.txt
-echo "Columnas: $(head -n1 $DATA_FILE | tr ',' '\n' | wc -l)" >> reports/validacion_inicial.txt
-echo "Valores faltantes: $(grep -c ",," $DATA_FILE || true)" >> reports/validacion_inicial.txt
+# 4. Generar reporte de validación
+echo ">>> Generando reporte..."
+REPORT_FILE="reports/validacion_inicial.txt"
 
-echo "Setup completado. Ver reports/validacion_inicial.txt"
+{
+    echo "=== REPORTE DE VALIDACIÓN ==="
+    echo "Fecha: $(date)"
+    echo "Archivo: $DATA_FILE"
+    echo "Tamaño: $(du -h $DATA_FILE | cut -f1)"
+    echo "Filas totales: $(wc -l < $DATA_FILE)"
+    # Truco: contar comas en la primera línea + 1 para saber columnas
+    echo "Columnas detectadas: $(head -n1 $DATA_FILE | tr ',' '\n' | wc -l)"
+} > "$REPORT_FILE"
+
+echo ">>> Setup completado exitosamente. Revisa $REPORT_FILE"
 \end{lstlisting}
+
+\begin{warningbox}{Tips de Ejecución}
+Recuerda dar permisos de ejecución antes de probarlo:
+\texttt{chmod +x scripts/setup\_proyecto.sh}\\
+Luego ejecútalo desde la raíz del proyecto:
+\texttt{./scripts/setup\_proyecto.sh}
+\end{warningbox}
 
 \subsection{Entrega}
 
 \begin{itemize}
-\item Sube tu repositorio a GitHub (público o con acceso al docente).
-\item Comparte la URL en el formulario del curso.
-\item Asegúrate de que el repositorio tenga al menos 3 commits con mensajes claros.
+    \item Sube tu repositorio a GitHub.
+    \item Asegúrate de que el \texttt{README.md} explique cómo ejecutar tu script de setup.
+    \item Comparte la URL del repositorio.
 \end{itemize}
-
-\textbf{Bonus (opcional):}
-Añade una llamada a Python al final del script para generar estadísticas descriptivas de columnas numéricas y guardarlas en \texttt{reports/estadisticas.csv}.
 
 \newpage
 
