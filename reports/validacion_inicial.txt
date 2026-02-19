@@ -1,5 +1,5 @@
 === Reporte de Validación ===
-Fecha: dom 18 ene 2026 22:19:50 -05
+Fecha: jue 19 feb 2026 15:24:23 -05
 Filas: 151
 Columnas: 5
 Valores faltantes: 0
