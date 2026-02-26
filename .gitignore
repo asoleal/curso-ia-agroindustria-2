@@ -28,3 +28,16 @@ ia_env/       # Agregado: nombre sugerido en la guía
 *.fdb_latexmk
 *.synctex.gz
 build/
+
+# --- SECCIÓN SEMANA 3 (OPTIMIZACIÓN) ---
+# Archivos binarios de NumPy (Datasets pesados)
+*.npy
+*.npz
+
+# Salidas de reportes PDF (Opcional: solo subir el .tex)
+#*.pdf
+
+# VS Code y Editores
+.vscode/
+*.swp
+.DS_Store
