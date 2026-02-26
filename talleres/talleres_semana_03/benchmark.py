@@ -1,5 +1,6 @@
 import numpy as np
 import time
+import os
 
 def calcular_promedio_for(data):
     """Calcula el promedio usando bucles tradicionales de Python"""
@@ -17,8 +18,9 @@ def calcular_promedio_numpy(data):
     return np.mean(data)
 
 def main():
-    if not np.os.path.exists('humedad_finca_grande.npy'):
-        print("Error: Ejecuta primero data_generator.py")
+    # Corrección aquí: usamos os.path directamente
+    if not os.path.exists('humedad_finca_grande.npy'):
+        print("Error: No se encuentra el archivo. Ejecuta primero: python data_generator.py")
         return
 
     data = np.load('humedad_finca_grande.npy')
