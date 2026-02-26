@@ -1,0 +1,49 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+
+\title{Reporte Técnico: Optimización de Procesamiento Agrícola}
+\author{Nombre del Estudiante: \underline{\hspace{5cm}}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+En este espacio, describa brevemente el problema de procesar grandes volúmenes de datos de sensores de humedad y por qué la eficiencia es crítica en la agroindustria.
+
+\section{Resultados del Benchmark}
+Complete la siguiente tabla con los tiempos obtenidos al ejecutar el script \texttt{benchmark.py} en su entorno local:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lr}
+\toprule
+\textbf{Método} & \textbf{Tiempo de Ejecución (s)} \\
+\midrule
+Bucle For Tradicional &  \\
+Vectorización NumPy &  \\
+\bottomrule
+\end{tabular}
+\caption{Comparación de eficiencia medida por el estudiante.}
+\end{table}
+
+\textbf{Cálculo del Speedup:} 
+NumPy fue aproximadamente \underline{\hspace{2cm}} veces más rápido que el bucle tradicional.
+
+\section{Análisis de Implementación}
+Explique brevemente qué funciones de NumPy utilizó para las tareas de:
+\begin{enumerate}
+    \item Limpieza de datos (Saneamiento).
+    \item Identificación de zonas críticas (Máscaras).
+    \item Simulación de riego (Lógica condicional).
+\end{enumerate}
+
+\section{Conclusiones}
+Escriba sus conclusiones sobre el impacto de usar computación de alto rendimiento (HPC) en tareas de monitoreo agrícola.
+
+\end{document}
