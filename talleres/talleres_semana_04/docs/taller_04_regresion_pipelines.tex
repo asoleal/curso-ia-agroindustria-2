@@ -1,0 +1,85 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\title{\textbf{Taller Práctico Semana 04}\\ \Large De la Parcela al Pipeline: Regresión y Procesamiento de Datos}
+\author{Ingeniería Agroindustrial}
+\date{Semana 04}
+
+\begin{document}
+\sloppy % Esto evita el error "Overfull \hbox" con los nombres largos de archivos
+
+\maketitle
+
+\section*{Objetivo del Taller}
+Aplicar los conceptos de regresión lineal múltiple, evaluación de modelos y estructuración de \textit{Pipelines} de \textit{Machine Learning} en contextos agronómicos. El taller avanza desde la fundamentación matemática matricial hasta la automatización computacional con datos ruidosos.
+
+\vspace{0.5cm}
+\noindent\rule{\textwidth}{0.4pt} % Línea horizontal corregida
+\vspace{0.5cm}
+
+\section{Parte 1: El Cimiento Matemático (Cálculo Manual)}
+
+\textbf{Contexto:} En un invernadero experimental de Palmira, se evaluó el efecto de un bioestimulante foliar ($x_1$, en mL) y las horas de luz artificial ($x_2$) sobre el crecimiento de plántulas de caña ($y$, en cm). Se tomaron 4 macetas de prueba con los siguientes resultados:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{cccc}
+\toprule
+\textbf{Maceta} & \textbf{Bioestimulante ($x_1$)} & \textbf{Luz ($x_2$)} & \textbf{Crecimiento ($y$)} \\
+\midrule
+1 & 1 & 2 & 5 \\
+2 & 2 & 1 & 4 \\
+3 & 2 & 3 & 7 \\
+4 & 3 & 2 & 6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Misiones:}
+\begin{enumerate}[label=\alph*)]
+    \item Construya la Matriz de Diseño $X$ (recuerde la columna de unos para el intercepto) y el Vector de Respuesta $Y$.
+    \item Calcule manualmente la matriz transpuesta $X^T$.
+    \item Calcule las multiplicaciones matriciales $(X^T X)$ y $(X^T Y)$.
+    \item Planteé el sistema de ecuaciones resultante para hallar el vector de parámetros $\hat{\beta}$. \textit{(Nota: No es estrictamente necesario invertir la matriz a mano $3 \times 3$ si el tiempo es limitado, pero debe dejar el sistema $(X^T X)\hat{\beta} = X^T Y$ completamente ensamblado).}
+\end{enumerate}
+
+\vspace{1cm}
+
+\section{Parte 2: Transición Computacional (Python Limpio)}
+
+\textbf{Contexto:} En la carpeta \texttt{data/} encontrará el archivo \texttt{01\_micro\_experimento\_limpio.csv}. Este archivo contiene 20 registros perfectos y sin errores sobre dosis de nitrógeno, potasio y rendimiento en toneladas.
+
+\textbf{Misiones (en \texttt{src/}):}
+\begin{enumerate}[label=\alph*)]
+    \item Utilice \texttt{pandas} para cargar los datos y separar la matriz $X$ y el vector $y$.
+    \item Utilice \texttt{LinearRegression} de \texttt{scikit-learn} para entrenar el modelo.
+    \item Imprima en consola los coeficientes hallados (intercepto y pendientes).
+    \item Calcule e interprete las métricas de error: $MAE$, $RMSE$ y $R^2$. ¿Es confiable este modelo para planificar la cosecha?
+\end{enumerate}
+
+\vspace{1cm}
+
+\section{Parte 3: El Escenario Real (Pipelines)}
+
+\textbf{Contexto:} En la agroindustria real los datos son caóticos. El archivo \texttt{02\_hacienda\_historico\_sucio.csv} contiene el registro histórico de 200 lotes. Sin embargo, los sensores de riego fallaron en varios lotes (generando valores \texttt{NaN}) y las variables tienen magnitudes extremas (ej. radiación en miles vs. dosis en decimales).
+
+\textbf{Misiones (en \texttt{src/}):}
+\begin{enumerate}[label=\alph*)]
+    \item Cargue la base de datos y utilice comandos de \texttt{pandas} (como \texttt{.isnull().sum()}) para identificar cuántos datos faltantes hay.
+    \item Construya un \texttt{Pipeline} usando \texttt{scikit-learn} que ejecute secuencialmente:
+    \begin{itemize}
+        \item \texttt{SimpleImputer}: Para rellenar los vacíos utilizando la mediana.
+        \item \texttt{StandardScaler}: Para estandarizar todas las variables a una misma escala.
+        \item \texttt{LinearRegression}: Para entrenar el modelo predictivo final.
+    \end{itemize}
+    \item Entrene su Pipeline con los datos crudos y prediga el rendimiento de una ``nueva parcela'' que recibió 120 kg/ha de nitrógeno, 30 mm de riego y 1800 horas de radiación solar.
+\end{enumerate}
+
+\end{document}
